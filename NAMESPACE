@@ -1,0 +1,3 @@
+useDynLib(smmbart_rcpp)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
