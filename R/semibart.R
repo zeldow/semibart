@@ -1,4 +1,4 @@
-smm.bart = function(
+semibart = function(
   x.train,a.train, y.train,
   sigest=NA, sigdf=3, sigquant=.90, 
   k=2.0,
@@ -57,7 +57,7 @@ smm.bart = function(
     binaryOffset = -1000.0
   }
   
-  smmres <- smmbart(x.train,a.train,y,as.double(sigest),
+  bartres_ <- semibart_cpp(x.train,a.train,y,as.double(sigest),
                     as.integer(sigdf),as.double(sigquant),as.double(k),
                     as.double(power),as.double(base),
                     as.double(meanb),as.double(sigb),
@@ -68,21 +68,21 @@ smm.bart = function(
   
   # now read in the results...
   if(!binary) {
-    smmres$sigmaReps = smmres$sigmaReps*(rgy[2]-rgy[1])
-    smmres$betaReps = smmres$betaReps*(rgy[2]-rgy[1])
+    bartres_$sigmaReps = smmres$sigmaReps*(rgy[2]-rgy[1])
+    bartres_$betaReps = smmres$betaReps*(rgy[2]-rgy[1])
   }
 
          
   if(binary) {
     retval = list(
-      beta = smmres$betaReps
+      beta = bartres_$betaReps
       )
   } else {
     retval = list(
-      sigma = smmres$sigmaReps,
-      beta = smmres$betaReps
+      sigma = bartres_$sigmaReps,
+      beta = bartres_$betaReps
       )
   }
-  class(retval) = 'smmbart'
+  class(retval) = 'semibart'
   return(invisible(retval))
 }
