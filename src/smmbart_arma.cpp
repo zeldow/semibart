@@ -16,11 +16,11 @@
 #include "Funs.h"
 #include "Prior.h"
 #include "MuS.h"
-#include "Sdev.h" //this compiles
-#include "Beta.h" //this compiles 
-#include "List1.h" //this compiles
-#include "EndNodeModel.h" //this compiles
-#include "Lib.h" //compiles
+#include "Sdev.h"
+#include "Beta.h"
+#include "List1.h"
+#include "EndNodeModel.h"
+#include "Lib.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
