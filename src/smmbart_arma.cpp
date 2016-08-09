@@ -50,7 +50,9 @@ vec y;
 vec ydat;
 vec ydat1;
 
+vec logitweights; //weights for logistic regression
 
+double nu = 8; //for approximation to logistic regression 
 
 
 vec weights;
@@ -80,7 +82,7 @@ List semibart_cpp(mat iX, mat itrt, vec iy,
 	     vec meanb, double sigb,
 	     int ntree, int ndpost, ivec inumcut,
 	     int iusequants,
-	     double binary_offset,
+	     double binary_offset, int probitlink,
 	     int verbose, int printevery)
 {
 
@@ -95,7 +97,7 @@ List semibart_cpp(mat iX, mat itrt, vec iy,
     else
       Rprintf("\n\nRunning BART with numeric y\n\n");
   }
-  const mat AtA = trt.t()*trt;
+  mat AtA = trt.t()*trt; //formerly put const in front
 
  
   NumX = X.n_cols;
@@ -109,6 +111,9 @@ List semibart_cpp(mat iX, mat itrt, vec iy,
     VarType(i) = ORD;
       }
 
+  //initialize logitweights to ones
+  logitweights.ones(NumObs);
+  
   bool usequants = true;
    if(!(iusequants)) usequants=false;
   
@@ -173,7 +178,6 @@ List semibart_cpp(mat iX, mat itrt, vec iy,
   double qchi = R::qchisq(1.0-sigquant,sigdf,1,0);
   lambda = (sigma*sigma*qchi)/sigdf;
 
-  
   //need to define
   // sets up priors on the end node parameters
   MuS mu;
@@ -235,9 +239,9 @@ List semibart_cpp(mat iX, mat itrt, vec iy,
       ydat1 = y; //set eps to be y (temp storage)
       ydat1 = ydat1 - mtotalfit; // subtract current total fit from trees
       for(int j=0;j<NumA;j++) // subtract current fit from blip
-	{
-	  ydat1 = ydat1 - trt.col(j) * curr_beta(j); // likely better way for this
-	}
+	    {
+	      ydat1 = ydat1 - trt.col(j) * curr_beta(j); // likely better way for this
+	    }
       ydat1 = ydat1 + trans(mtrainFits.row(i)); //add back in fit for tree of interest
       //will eventually refit this
       
@@ -256,21 +260,31 @@ List semibart_cpp(mat iX, mat itrt, vec iy,
     //subtract mtotalfit from y;
     eps = y;
     eps = eps - mtotalfit;
-
-    Aty = trt.t()*eps;
-    bet.setAy(Aty);
-    bet.drawPost();
-    curr_beta = bet.getBeta();
-    betaReps.row(k) = trans(curr_beta);
+  
+    if(binary && probitlink==1) {  //logit link
+      Aty = trt.t()*diagmat(logitweights)*eps;
+      bet.setAy(Aty);
+      AtA = trt.t()*diagmat(logitweights)*trt;
+      bet.setAA(AtA);
+      bet.drawPost();
+      curr_beta = bet.getBeta();  //divide to get back on scale of logit link
+      betaReps.row(k) = trans(curr_beta);
+    } else {  //continuous or probit link
+      Aty = trt.t()*eps;
+      bet.setAy(Aty);
+      bet.drawPost();
+      curr_beta = bet.getBeta();
+      betaReps.row(k) = trans(curr_beta);
+    }
     
     if(!binary) {
       //update Sigma
       eps = y;
       eps = eps - mtotalfit;
       for(int j=0;j<NumA;j++) //subtract off blip fits
-	{
-	  eps = eps - trt.col(j) * curr_beta(j); //maybe better way to code this
-	}
+	    {
+	      eps = eps - trt.col(j) * curr_beta(j); //maybe better way to code this
+	    }
       sd.setData(NumObs,eps); 
       sd.drawPost();
       mu.setSigma(sd.getS());
@@ -279,23 +293,43 @@ List semibart_cpp(mat iX, mat itrt, vec iy,
     }
 
     if(binary) {
-      double u, Z, blip;
-      for(int i = 1; i <= NumObs; i++) {
-	blip = 0.0;
-	for(int j=0;j<NumA;j++)
-	  {
-	    blip = blip+trt(i-1,j)*curr_beta(j); 
-	  }
-	u = unif_rand();
-	if(ydat(i-1) > 0) {
-	  //Z = R::qnorm((1.0-u)*R::pnorm(-mtotalfit(i-1)-blip-binary_offset,0.0,1.0,1,0)+u,0.0,1.0,1,0);
-	  Z = R::qnorm(R::runif(R::pnorm(0,mtotalfit(i-1)+blip+binary_offset,1.0,1,0),1),mtotalfit(i-1)+blip+binary_offset,1.0,1,0);
-	} else {
-	  //Z = -R::qnorm((1.0-u)*R::pnorm(mtotalfit(i-1)+blip+binary_offset,0.0,1.0,1,0)+u,0.0,1.0,1,0);
-	  Z = R::qnorm(R::runif(0,R::pnorm(0,mtotalfit(i-1)+blip+binary_offset,1.0,1,0)),mtotalfit(i-1)+blip+binary_offset,1.0,1,0);
-	}
-	//y(i-1) = mtotalfit(i-1) + blip + Z;
-	y(i-1) = Z;
+      if(probitlink==0) {
+        double u, Z, blip;
+        for(int i = 1; i <= NumObs; i++) {
+	        blip = 0.0;
+	        for(int j=0;j<NumA;j++)
+	          {
+	            blip = blip+trt(i-1,j)*curr_beta(j); 
+	          }
+	        u = unif_rand();
+	        if(ydat(i-1) > 0) {
+	          //Z = R::qnorm((1.0-u)*R::pnorm(-mtotalfit(i-1)-blip-binary_offset,0.0,1.0,1,0)+u,0.0,1.0,1,0);
+	          Z = R::qnorm(R::runif(R::pnorm(0,mtotalfit(i-1)+blip+binary_offset,1.0,1,0),1),mtotalfit(i-1)+blip+binary_offset,1.0,1,0);
+	        } else {
+	          //Z = -R::qnorm((1.0-u)*R::pnorm(mtotalfit(i-1)+blip+binary_offset,0.0,1.0,1,0)+u,0.0,1.0,1,0);
+	          Z = R::qnorm(R::runif(0,R::pnorm(0,mtotalfit(i-1)+blip+binary_offset,1.0,1,0)),mtotalfit(i-1)+blip+binary_offset,1.0,1,0);
+	        }
+	        //y(i-1) = mtotalfit(i-1) + blip + Z;
+	        y(i-1) = Z;
+        } 
+      } else if(probitlink==1) {  //t8 approx for logit
+        double Z, blip;
+        for(int i = 0; i < NumObs; i++) {
+          blip = 0.0;
+          for(int j=0;j<NumA;j++)
+          {
+            blip = blip+trt(i,j)*curr_beta(j); 
+          }
+          
+          if(ydat(i) > 0) {
+            Z = R::qnorm(R::runif(R::pnorm(0,mtotalfit(i)+blip+binary_offset,sqrt(1.0/logitweights(i)),1,0),1),mtotalfit(i)+blip+binary_offset,sqrt(1.0/logitweights(i)),1,0);
+          } else {
+            Z = R::qnorm(R::runif(0,R::pnorm(0,mtotalfit(i)+blip+binary_offset,sqrt(1.0/logitweights(i)),1,0)),mtotalfit(i)+blip+binary_offset,sqrt(1.0/logitweights(i)),1,0);
+          }
+          y(i) = Z;
+          
+          logitweights(i) = R::rgamma( (nu + 1.0 ) / 2 , 2 / ( nu + pow(y(i) - mtotalfit(i) - blip - binary_offset, 2) ) );
+        }
       }
     }
     
@@ -314,6 +348,7 @@ List semibart_cpp(mat iX, mat itrt, vec iy,
 
   if(verbose) {
     Rprintf("Function call finished.\n");
+  }
 
    return List::create(_["sigmaReps"] = sigmaReps,
 		      _["betaReps"] = betaReps);

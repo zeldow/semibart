@@ -9,6 +9,7 @@ semibart = function(
   numcut = 100,
   usequants = 1,
   offset = 0,
+  binarylink = "probit",
   verbose = 1,
   printevery = 100)
 {
@@ -22,6 +23,7 @@ semibart = function(
     if((length(unique(y.train)) == 2) & (max(y.train) == 1) & (min(y.train) == 0)) {
       cat('NOTE: assumming numeric response is binary\n')
       binary = TRUE
+      if ( binarylink != "probit" & binarylink != "logit" & binarylink != "logistic" ) stop("for binary outcomes, must choose probit or logit link (default = probit)")
     }
   }
   
@@ -36,7 +38,9 @@ semibart = function(
   if((mode(sigquant)!="numeric") || (sigquant<0)) stop("input sigquant must be a positive number")
   if((mode(ntree)!="numeric") || (ntree<0)) stop("input ntree must be a positive number")
   if((mode(ndpost)!="numeric") || (ndpost<0)) stop("input ndpost must be a positive number")
-
+  
+  probitlink <- 0;
+  if (binarylink == "logit" || binarylink == "logistic") probitlink <- 1
   rgy = range(y.train)
   y = -.5 + (y.train-rgy[1])/(rgy[2]-rgy[1])
 
@@ -63,13 +67,13 @@ semibart = function(
                     as.double(meanb),as.double(sigb),
                     as.integer(ntree),as.integer(ndpost),
                     as.integer(numcut),as.integer(usequants),
-                    as.double(offset),
+                    as.double(offset), as.integer(probitlink),
                     as.integer(verbose),as.integer(printevery))
   
   # now read in the results...
   if(!binary) {
-    bartres_$sigmaReps = smmres$sigmaReps*(rgy[2]-rgy[1])
-    bartres_$betaReps = smmres$betaReps*(rgy[2]-rgy[1])
+    bartres_$sigmaReps = bartres_$sigmaReps*(rgy[2]-rgy[1])
+    bartres_$betaReps = bartres_$betaReps*(rgy[2]-rgy[1])
   }
 
          
