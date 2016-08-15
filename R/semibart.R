@@ -1,3 +1,25 @@
+#'Semiparametric regression using BART
+#'
+#'@param x.train Design matrix of values to be modeled with BART
+#'@param a.train Design matrix of values to be modeled linearly
+#'@param y.train Vector of outcome (continuous or binary)
+#'@param sigest Estimate of regression error standard deviation
+#'@param sigdf Prior value on error term
+#'@param sigquant Prior value on error term
+#'@param k Controls how aggressive the fit is
+#'@param power Prior on tree depth
+#'@param base Prior on tree depth
+#'@param meanb Prior mean on regression coefficients -- length must equal # columns in a.train
+#'@param sigb Prior standard deviation on regression coefficients ~ sigb^2 I
+#'@param ntree Number of trees to use for BART
+#'@param ndpost Number of MCMC iterations
+#'@param numcut Number of cutpoints for each variable in BART. Must be of length 1 (for all) or have length ncol(x.train)
+#'@param usequants Indicates whether to use observed quantiles for cutpoints or evenly spaced cutpoints based on min and max
+#'@param offset Offset for regression -- used only when outcome is binary
+#'@param binarylink Indicates whether to use probit or logit link for binary data
+#'@param verbose Indicates whether or not user wants printed output
+#'@param printevery Printevery
+#'@return Returns matrix of regression parameters (ndpost x ncol(a.train)). When y.train is continuous also returns vector of draws of regression parameter.
 semibart = function(
   x.train,a.train, y.train,
   sigest=NA, sigdf=3, sigquant=.90, 
