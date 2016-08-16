@@ -1,19 +1,33 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "semibart documentation"
+author: "Bret Zeldow"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{semibart documentation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+## Introduction
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+This document is intended to provide documentation for the semibart package in R. Let $Y$ be the outcome. Currently we support $Y$ to be continuous or binary. Let $X$ be possible predictors of $Y$. Linear regression typically assumes (for continuous outcomes) that $Y = X \beta + \epsilon$ and imposes linearity among all of the $X$. Often there is just one covariate of interest--an exposure or a treatment. Call this exposure $A$ where $X = (L, A)$ and $L$ contains the remaining covariates. Since there may be interactions and nonlinearities among the relationship between $Y$ and $X$, we might not care to impose the linearity assumptions implicit in linear regression to variables $L$ that we don't care about.
+
+Our Bayesian regression models allows some of the predictors to be modeled nonparametric with Bayesian Additive Regression Trees (BART) and other predictors to be modeled linearly. Thus, we can fit the model $Y  = f(L) + A \psi + \epsilon$, where $f(\cdot)$ is fit using BART. We can also put more terms (and interactions) in the linear part by fitting something like $Y = f(L) + A \psi_1 + A L_1 \psi_2 + \epsilon$ or $Y = f(L_{-1}) + A \psi_1 + A L_1 \psi_2 + L_1 \psi_3 + \epsilon$ where $L_{-1}$ indicates all variables in $L$ except for $L_1$.
+
+In addition to the typical prior assumptions and distributions on the BART part (see the BayesTree package), we also specify a multivariate normal prior distribution for $\psi$. That is, $\psi \sim N(0,\sigma^2_{\psi} I).$
+
+Our package also admits binary outcomes through the probit or logit links.
+
+
+## Function and Arguments
+
+The primary function in the semibart package is "semibart."
+
+* x.train -- This is a matrix with each column containing a variable that is to be included in the BART part of the model
+* a.train -- This is a design matrix for the linear part of the model. If there is only a single variable can use cbind(varname). If you want to include multiple variables or interactions, use cbind(varname1,varname2) or cbind(varname1,varname2,varname1*varname2). Must specifically put the interactions as a column of the matrix.
+* y.train -- Vector of outcomes. Can be binary or numeric. If binary everything must be either 0 or 1. The function will automatically detect whether the outcome is binary or continuous.
+* sigest -- Intial guess of the standard deviation of the regression error. If NA (the default), the function will use an estimate from least squares. This is set to 1 automatically if outcome is binary.
 
 ## Vignette Info
 
