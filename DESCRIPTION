@@ -11,3 +11,6 @@ Imports: Rcpp (>= 0.12.3)
 LinkingTo: Rcpp
 URL: http://github.com/zeldow/semibart
 BugReports: http://github.com/zeldow/semibart/issues
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
