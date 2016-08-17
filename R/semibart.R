@@ -80,7 +80,7 @@ semibart = function(
   }
   
   if(!binary) {
-    binaryOffset = -1000.0
+    offset = -1000.0
   }
   
   bartres_ <- semibart_cpp(x.train,a.train,y,as.double(sigest),
