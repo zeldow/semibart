@@ -76,11 +76,11 @@ EndNodeModel* endNodeModel=0;
 
 
 // [[Rcpp::export]]
-List semibart_cpp(mat iX, mat itrt, vec iy,
+List semibart_cpp(arma::mat iX, arma::mat itrt, arma::vec iy,
 	     double sigma, int sigdf, double sigquant, double kfac,
 	     double power, double base, 
-	     vec meanb, double sigb,
-	     int ntree, int ndpost, ivec inumcut,
+	     arma::vec meanb, double sigb,
+	     int ntree, int ndpost, arma::ivec inumcut,
 	     int iusequants,
 	     double binary_offset, int probitlink,
 	     int verbose, int printevery)

@@ -13,7 +13,7 @@
 #'@param sigb Prior standard deviation on regression coefficients ~ sigb^2 I
 #'@param ntree Number of trees to use for BART
 #'@param ndpost Number of MCMC iterations
-#'@param numcut Number of cutpoints for each variable in BART. Must be of length 1 (for all) or have length ncol(x.train)
+#'@param numcut Number of cutpoints for each variable in BART. Must be of length 1 or have length ncol(x.train)
 #'@param usequants Indicates whether to use observed quantiles for cutpoints or evenly spaced cutpoints based on min and max
 #'@param offset Offset for regression -- used only when outcome is binary
 #'@param binarylink Indicates whether to use probit or logit link for binary data

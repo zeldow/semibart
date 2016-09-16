@@ -5,12 +5,17 @@ Version: 0.1.0
 Date: 2016-08-15
 Author: Bret Zeldow
 Maintainer: Bret Zeldow <zeldow@gmail.com>
-Description: Uses Bayesian Additive Regression Trees (BART) to model part of the conditional distribution nonparametrically. The rest of the covariates are modelled linearly.  Continuous or binary outcomes permitted.
+Description: Uses Bayesian Additive Regression Trees (BART) to model part of
+    the conditional distribution nonparametrically. The rest of the covariates are
+    modelled linearly. Continuous or binary outcomes permitted.
 License: GPL (>= 2)
-Imports: Rcpp (>= 0.12.3)
-LinkingTo: Rcpp
+Imports:
+    Rcpp (>= 0.12.3)
+LinkingTo: Rcpp, RcppArmadillo
 URL: http://github.com/zeldow/semibart
 BugReports: http://github.com/zeldow/semibart/issues
-Suggests: knitr,
+Suggests:
+    knitr,
     rmarkdown
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1
