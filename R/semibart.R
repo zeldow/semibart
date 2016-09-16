@@ -20,6 +20,7 @@
 #'@param verbose Indicates whether or not user wants printed output
 #'@param printevery Printevery
 #'@return Returns matrix of regression parameters (ndpost x ncol(a.train)). When y.train is continuous also returns vector of draws of regression parameter.
+#'@export
 semibart = function(
   x.train,a.train, y.train,
   sigest=NA, sigdf=3, sigquant=.90, 
