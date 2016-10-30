@@ -11,13 +11,13 @@ vignette: >
 
 ## Introduction
 
-This document is intended to provide documentation for the semibart package in R. Let $Y$ be the outcome. Currently we support $Y$ to be continuous or binary. Let $X$ be possible predictors of $Y$. Linear regression typically assumes (for continuous outcomes) that $Y = X \beta + \epsilon$ and imposes linearity among all of the $X$. Often there is just one covariate of interest--an exposure or a treatment. Call this exposure $A$ where $X = (L, A)$ and $L$ contains the remaining covariates. Since there may be interactions and nonlinearities among the relationship between $Y$ and $X$, we might not care to impose the linearity assumptions implicit in linear regression to variables $L$ that we don't care about.
+This document is intended to provide documentation for the semibart package in R. Let $Y$ be the outcome, which can be continuous or binary. Let $X$ represent covariates, which may be predictors of $Y$. The most common way to model the relationship between $X$ and $Y$ is linear regression, which typically assumes (for continuous outcomes) that $Y = X \beta + \epsilon$. In practice, there is often there is just one covariate of scientific interest--an exposure or a treatment, which we'll call $A$. Now, $X = (L, A)$ and $L$ contains the remaining covariates. To get the effect of $A$ on $Y$, we must also adjust for covariates $L$. This can be done in linear regression but comes at the cost of imposing linearity on the mean function. Furthermore, any interactions must be specified by the analyst. Our package allows you to model the relationship between $L$ and $Y$ nonparametrically, where nonlinearities and interactions are detected automatically. This is done through Bayesian Additive Regression Trees (BART). The exposure of $A$ is still modeled linearly as in linear regression. If desired, it is also possible to include effect modifiers of $A$ as a linear parameter.
 
-Our Bayesian regression models allows some of the predictors to be modeled nonparametric with Bayesian Additive Regression Trees (BART) and other predictors to be modeled linearly. Thus, we can fit the model $Y  = f(L) + A \psi + \epsilon$, where $f(\cdot)$ is fit using BART. We can also put more terms (and interactions) in the linear part by fitting something like $Y = f(L) + A \psi_1 + A L_1 \psi_2 + \epsilon$ or $Y = f(L_{-1}) + A \psi_1 + A L_1 \psi_2 + L_1 \psi_3 + \epsilon$ where $L_{-1}$ indicates all variables in $L$ except for $L_1$.
+Our model allows some of the predictors to be modeled nonparametrically with BART and other predictors to be modeled linearly. The model we fit can be written as $Y  = f(L) + A \psi + \epsilon$, where $f(\cdot)$ is fit using BART. We can also put more terms (and interactions) in the linear part by fitting something like $Y = f(L) + A \psi_1 + A L_1 \psi_2 + \epsilon$ or $Y = f(L_{-1}) + A \psi_1 + A L_1 \psi_2 + L_1 \psi_3 + \epsilon$ where $L_{-1}$ indicates all variables in $L$ except for $L_1$.
 
 In addition to the typical prior assumptions and distributions on the BART part (see the BayesTree package), we also specify a multivariate normal prior distribution for $\psi$. That is, $\psi \sim N(0,\sigma^2_{\psi} I).$
 
-Our package also admits binary outcomes through the probit or logit links.
+When the outcome is binary, we use the probit link.
 
 
 ## Function and Arguments
