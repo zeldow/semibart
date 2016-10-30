@@ -22,7 +22,8 @@
 #include "EndNodeModel.h"
 #include "Lib.h"
 
-// [[Rcpp::depends(RcppArmadillo)]]
+// [[Rcpp::depends(RcppArmadillo, RcppProgress)]]
+#include <progress.hpp>
 
 using namespace Rcpp;
 using namespace arma;
@@ -59,9 +60,6 @@ vec weights;
 
 ivec RuleNum; // integer vec of length NumX, ith is number of split
 				// points for ORD var and number of CATs for CAT var
-//double **RuleMat; // ragged array, ith row has RuleNum values, split values
-					// for ORD, cat values for CAT
-
 
 
 
@@ -97,7 +95,7 @@ List semibart_cpp(arma::mat iX, arma::mat itrt, arma::vec iy,
     else
       Rprintf("\n\nRunning BART with numeric y\n\n");
   }
-  mat AtA = trt.t()*trt; //formerly put const in front
+  mat AtA = trt.t()*trt; 
 
  
   NumX = X.n_cols;
@@ -233,6 +231,11 @@ List semibart_cpp(arma::mat iX, arma::mat itrt, arma::vec iy,
   
   //MCMC loop
   for(int k=0;k<ndpost;k++) { // loop through MCMC ndpost times
+    
+    if ( Progress::check_abort() ) {
+      return List::create(_["sigmaReps"] = sigmaReps,
+                          _["betaReps"] = betaReps);
+    }
 
     for(nvs i=0;i<theTrees.size();i++) {    // loop through each tree
       
