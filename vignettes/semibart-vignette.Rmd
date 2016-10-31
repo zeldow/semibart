@@ -11,62 +11,87 @@ vignette: >
 
 ## Introduction
 
-This document is intended to provide documentation for the semibart package in R. Let $Y$ be the outcome, which can be continuous or binary. Let $X$ represent covariates, which may be predictors of $Y$. The most common way to model the relationship between $X$ and $Y$ is linear regression, which typically assumes (for continuous outcomes) that $Y = X \beta + \epsilon$. In practice, there is often there is just one covariate of scientific interest--an exposure or a treatment, which we'll call $A$. Now, $X = (L, A)$ and $L$ contains the remaining covariates. To get the effect of $A$ on $Y$, we must also adjust for covariates $L$. This can be done in linear regression but comes at the cost of imposing linearity on the mean function. Furthermore, any interactions must be specified by the analyst. Our package allows you to model the relationship between $L$ and $Y$ nonparametrically, where nonlinearities and interactions are detected automatically. This is done through Bayesian Additive Regression Trees (BART). The exposure of $A$ is still modeled linearly as in linear regression. If desired, it is also possible to include effect modifiers of $A$ as a linear parameter.
+This document is intended to provide background and documentation for the semibart package in R. Let $Y$ be the outcome, which is continuous. Let $X = (L, A)$ represent covariates, which may be predictors of $Y$, where $A$ represents the exposure or treatment of interest and $L$ all other covariates. A general regression model is $Y = f(X) + \epsilon = f(A, L) + \epsilon$. Fully parametric linear regression sets $f(X) = X\beta$ and requires normal error terms with mean zero. The model used in this package is $Y = \omega(L) + A \beta + \epsilon$, where $\omega(L)$ is modelled nonparametrically using Bayesian Additive Regression Trees (BART). That is, many of the predictors of $Y$ are allowed to have unspecified functional form, while a smaller subset of covariates are modelled linearly.
 
-Our model allows some of the predictors to be modeled nonparametrically with BART and other predictors to be modeled linearly. The model we fit can be written as $Y  = f(L) + A \psi + \epsilon$, where $f(\cdot)$ is fit using BART. We can also put more terms (and interactions) in the linear part by fitting something like $Y = f(L) + A \psi_1 + A L_1 \psi_2 + \epsilon$ or $Y = f(L_{-1}) + A \psi_1 + A L_1 \psi_2 + L_1 \psi_3 + \epsilon$ where $L_{-1}$ indicates all variables in $L$ except for $L_1$.
+BART is a Bayesian sum-of-trees model which can detect nonlinearities and interactions in the predictors with respect to an outcome using minimal tuning. That is, $\omega(L) = \sum_{i=1}^m g_i(L)$, where each $g_i(L)$ is a regression tree. Each individual tree is restricted to be small so that no tree yields undue influence on the overall fit. The 
+
 
 In addition to the typical prior assumptions and distributions on the BART part (see the BayesTree package), we also specify a multivariate normal prior distribution for $\psi$. That is, $\psi \sim N(0,\sigma^2_{\psi} I).$
 
 When the outcome is binary, we use the probit link.
 
 
+## Important Notes
+
+As in the BayesTree package and as recommended in Chipman et al (2010), the outcome $Y$ is shifted and rescaled to be between $[-0.5, 0.5]$. This eases computation and prior choices for the BART part of the model. This is done automatically. Upon completion of the algorithm, all parameters are shifted and rescaled to the original scale of $Y$.
+
 ## Function and Arguments
 
-The primary function in the semibart package is "semibart."
+The following are the arguments for the **semibart** function.
 
-* x.train -- This is a matrix with each column containing a variable that is to be included in the BART part of the model
-* a.train -- This is a design matrix for the linear part of the model. If there is only a single variable can use cbind(varname). If you want to include multiple variables or interactions, use cbind(varname1,varname2) or cbind(varname1,varname2,varname1*varname2). Must specifically put the interactions as a column of the matrix.
+* x.train -- Design matrix of values to be modeled nonparametrically with BART. Number of rows equals the total number of observations and the number of columns is equal to number of covariates to be modelled in BART. Do not include interactions or higher order terms.
+
+```{r, eval=FALSE}
+## Not run
+n <- 100
+x1 <- rnorm(n); x2 <- rnorm(n); x3 <- rnorm(n); 
+x.train <- cbind(x1, x2, x3) #possible
+x.train <- cbind(x1, x2, x3, x1*x3) ## DO NOT DO THIS. no interactions or higher order terms.
+```
+
+* a.train -- This is a design matrix for the linear part of the model. At a minimum, must contain one column. This matrix can also include interactions or higher order terms. For example,
+
+```{r, eval=FALSE}
+## Not run
+n <- 100
+a <- rbinom(n, 1, 0.5)
+x1 <- rnorm(n)
+
+## the followiing are possible for the linear part of the model
+a.train <- cbind(a)  # for one dimensional linear model
+a.train <- cbind(a, a*x1) #effect modification with x1. main effect of x1 included in x.train
+a.train <- cbind(a, a*x1, x1) #both main effects and interaction included in linear model
+a.train <- cbind(a, x1) #both main effects, no interaction
+a.train <- cbind(a, a*a) #higher order terms
+```
 * y.train -- Vector of outcomes. Can be binary or numeric. If binary everything must be either 0 or 1. The function will automatically detect whether the outcome is binary or continuous.
 * sigest -- Intial guess of the standard deviation of the regression error. If NA (the default), the function will use an estimate from least squares. This is set to 1 automatically if outcome is binary.
+* sigdf -- The number of degrees of freedom on the prior distribution for the error variance. See BayesTree package and Chipman et al (2010) for more details.
+* sigquant -- The quantile of the prior that the rough estimate (see sigest) is placed at. The closer the quantile is to 1, the more aggresive the fit will be as you are putting more prior weight on error standard deviations $\sigma^2$ less than the rough estimate. Not used if y.train is binary. See BayesTree package and Chipman et al (2010) for more details.
+* k - For numeric y, k is the number of prior standard deviations $E(Y|x) = f(x)$ is away from +/-.5. The response (y.train) is internally scaled to range from -0.5 to 0.5. For binary y, k is the number of prior standard deviations \eqn{f(x)} is away from +/-3. In both cases, the bigger k is, the more conservative the fitting will be. See BayesTree package and Chipman et al (2010) for more details.
+* power - Prior on tree depth. Must be in the interval $[0, \infty)$.
+* base - Prior on tree depth. Must be in the interval $(0, 1)$:  
+  \ \  P(end node is terminal) = base * (1 + d)^{-power}, where d is the current depth at a given node.
+  \ \  See BayesTree package and Chipman et al (2010) for more details.
+* meanb - Prior mean for $\beta$, the parameters on the linear part of the model. Strongly recommended to use mean 0.
+* sigb - Prior standard deviation on $\beta$, the regression coefficients. The prior is $\beta \sim N(\text{meanb}, \text{sigb} \cdot I),$ where $I$ is the identity matrix of appropriate dimension (number of rows = length(meanb); number of columns = length(meanb)). Since the outcome y.train is shifted and rescaled to be between $[-0.5, 0.5]$, this doesn't have to be very large to be a diffuse prior. The default prior is $N(0, 4^2)$.
+* ntree - The number of trees to use for BART.
+* ndpost - Total number of MCMC draws requested.
+* numcut - Number of cutpoints for each variable in BART. Must be of length 1 or have length ncol(x.train).
+* usequants - Indicates whether to use observed quantiles for cutpoints or evenly spaced cutpoints based on min and max for each column in x.train.
+* offset - Offset for regression -- used only when outcome is binary.
+* binarylink - Indicates whether to use probit or logit link for binary data. Currently only the probit link is supported. Default is "probit." Will be updated once "logit" is supported.
+* verbose - Boolean value indicating whether or not to print output while running.
+* printevery - Positive number specifying how often to print updates if verbose = TRUE. Default is to print every 100 MCMC iterations.
 
-## Vignette Info
+## Function Output
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+The **semibart** function outputs a list in R. The first element is a matrix with ndpost rows and ncol(a.train) columns, corresponding to the posterior draws for $\beta$. This can be retrieved with the \$ operator with the name "beta". For continuous outcomes, we also output the draws for $\sigma^2$ with the name "sigma." 
 
-## Styles
+```{r, eval=FALSE}
+#not run, no data
+fake.res <- semibart(x,a,y,...)
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+#get draws for beta
+fake.res$beta
+fake.res$beta[1,] #first iteration
+fake.res$beta[ndpost,] #last iteration
+colMeans(fake.res$beta) #only works if beta is multidimensional
+mean(fake.res$beta) # only meaningful if beta is 1-dimensional
 
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+#get draws for sigma
+fake.res$sigma
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+## Examples

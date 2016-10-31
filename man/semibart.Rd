@@ -19,7 +19,7 @@ semibart(x.train, a.train, y.train, sigest = NA, sigdf = 3,
   printevery = 100)
 }
 \arguments{
-\item{x.train}{Design matrix of values to be modeled with BART.}
+\item{x.train}{Design matrix of values to be modeled nonparametrically with BART.}
 
 \item{y.train}{Vector of outcomes (continuous or binary). When binary, elements
 must be either 0 or 1.}
