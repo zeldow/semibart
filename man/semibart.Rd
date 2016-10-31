@@ -11,48 +11,58 @@ semibart(x.train, a.train, y.train, sigest = NA, sigdf = 3,
   printevery = 100)
 }
 \arguments{
-\item{x.train}{Design matrix of values to be modeled with BART}
+\item{x.train}{Design matrix of values to be modeled with BART.}
 
-\item{a.train}{Design matrix of values to be modeled linearly}
+\item{a.train}{Design matrix of values to be modeled linearly.}
 
-\item{y.train}{Vector of outcome (continuous or binary)}
+\item{y.train}{Vector of outcomes (continuous or binary). When binary, elements must be either 0 or 1.}
 
-\item{sigest}{Estimate of regression error standard deviation}
+\item{sigest}{Estimate of regression error. If no value is supplied and sigest=NA, the least squares estimate is used. Must be a positive number. Ignored if y.train is binary. }
 
-\item{sigdf}{Prior value on error term}
+\item{sigdf}{Degrees of freedom on prior for error variance.}
 
-\item{sigquant}{Prior value on error term}
+\item{sigquant}{The quantile of the prior that the rough estimate (see sigest) is placed at. The closer the quantile is to 1, the more aggresive the fit will be as you are putting more prior weight on error standard deviations (\eqn{\sigma}{sigma}) less than the rough estimate. Not used if y.train is binary.}
 
-\item{k}{Controls how aggressive the fit is}
+\item{k}{For numeric y, k is the number of prior standard deviations \eqn{E(Y|x) = f(x) } is away from +/-.5. The response (y.train) is internally scaled to range from -0.5 to 0.5. For binary y, k is the number of prior standard deviations \eqn{f(x)} is away from +/-3. In both cases, the bigger k is, the more conservative the fitting will be.}
 
-\item{power}{Prior on tree depth}
+\item{power}{Power parameter for prior on tree depth.}
 
-\item{base}{Prior on tree depth}
+\item{base}{Base parameter on prior on tree depth.}
 
-\item{meanb}{Prior mean on regression coefficients -- length must equal # columns in a.train}
+\item{meanb}{Prior mean on regression coefficients. Length must equal # columns in a.train, that is: length(meanb) == ncol(a.train).}
 
-\item{sigb}{Prior standard deviation on regression coefficients ~ sigb^2 I}
+\item{sigb}{Prior standard deviation on regression coefficients. Prior is \eqn{\beta \sim N(meanb, sigb^2 I).}
 
-\item{ntree}{Number of trees to use for BART}
+\item{ntree}{Number of trees to use for BART.}
 
-\item{ndpost}{Number of MCMC iterations}
+\item{ndpost}{Number of MCMC iterations, including burn-in.}
 
 \item{numcut}{Number of cutpoints for each variable in BART. Must be of length 1 or have length ncol(x.train)}
 
-\item{usequants}{Indicates whether to use observed quantiles for cutpoints or evenly spaced cutpoints based on min and max}
+\item{usequants}{Indicates whether to use observed quantiles for cutpoints or evenly spaced cutpoints based on min and max of each covariate.}
 
-\item{offset}{Offset for regression -- used only when outcome is binary}
+\item{offset}{Used when y.train is binary.}
 
-\item{binarylink}{Indicates whether to use probit or logit link for binary data}
+\item{binarylink}{Indicates whether to use probit or logit link for binary data. Currently only the probit link is supported.}
 
-\item{verbose}{Indicates whether or not user wants printed output}
+\item{verbose}{Indicates whether or not user wants printed output to check progress of MCMC algorithm.}
 
-\item{printevery}{Printevery}
+\item{printevery}{Indicates how often to print an update on completion of algorithm. Default is to print a message every 100 iterations. Ignored if verbose = FALSE. }
 }
+
 \value{
-Returns matrix of regression parameters (ndpost x ncol(a.train)). When y.train is continuous also returns vector of draws of regression parameter.
-}
-\description{
-Semiparametric regression using BART
+Returns a list containing a matrix of MCMC draws for regression parameters (the dimension is ndpost x ncol(a.train)). When y.train is continuous also returns vector of draws of the error variance. Retrieve the regression parameters using $beta and $sigma, for the regression parameters and variance parameters, respectively.
 }
 
+\description{
+Bayesian semiparametric regression using BART. For a continuous response \eqn{y}
+}
+
+\references{
+Chipman, H., George, E., and McCulloch R. (2010)
+   Bayesian Additive Regression Trees.
+   \emph{The Annals of Applied Statistics}, \bold{4,1}, 266-298.
+
+Zeldow, B, Lo Re, V, Roy, J. (2016)
+   Bayesian semiparametric regression and structural mean models with BART.
+}

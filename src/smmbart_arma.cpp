@@ -22,8 +22,8 @@
 #include "EndNodeModel.h"
 #include "Lib.h"
 
-// [[Rcpp::depends(RcppArmadillo, RcppProgress)]]
-#include <progress.hpp>
+// [[Rcpp::depends(RcppArmadillo)]]
+//#include <progress.hpp>
 
 using namespace Rcpp;
 using namespace arma;
@@ -232,10 +232,10 @@ List semibart_cpp(arma::mat iX, arma::mat itrt, arma::vec iy,
   //MCMC loop
   for(int k=0;k<ndpost;k++) { // loop through MCMC ndpost times
     
-    if ( Progress::check_abort() ) {
-      return List::create(_["sigmaReps"] = sigmaReps,
-                          _["betaReps"] = betaReps);
-    }
+ //   if ( Progress::check_abort() ) {
+//      return List::create(_["sigmaReps"] = sigmaReps,
+//                          _["betaReps"] = betaReps);
+//    }
 
     for(nvs i=0;i<theTrees.size();i++) {    // loop through each tree
       
