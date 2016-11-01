@@ -55,7 +55,8 @@ double DrNogNode(Node *top,Node **n)
 	NodeP *nogvec;
 	MakeNogVec(top,&nogvec,&nnog); 
 
-	double u=unif_rand();
+	//double u=unif_rand();
+	double u = R::runif(0.0,1.0);
 	NodeI =  (int)floor(u*nnog)+1;
 	*n = nogvec[NodeI];
 

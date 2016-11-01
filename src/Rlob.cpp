@@ -23,7 +23,8 @@ int Bern(double p)
 //Bernouill random number generator
 {
   //Rprintf("Bern\n");
-        if(unif_rand() < p) {
+        //if(unif_rand() < p) {
+        if(R::runif(0.0,1.0) < p) {
                 return 1;
         } else {
                 return 0;
@@ -37,7 +38,8 @@ int Disc(double *p)
 {
   //Rprintf("Disc\n");
    double sum;
-   double u = unif_rand();
+   //double u = unif_rand();
+   double u = R::runif(0.0,1.0);
 
    int i=1;
    sum=p[1];

@@ -223,7 +223,8 @@ double ChangeRule(Node *top,int *Done)
 	
 	// randomly choose a notbot node = cnode
 	//u=ran1(&idum);
-	u= unif_rand();
+	//u= unif_rand();
+	u = R::runif(0.0,1.0);
 	int NodeI =  (int)floor(u*Nnotbot)+1;
 	Node *cnode = notbotvec[NodeI];
 
@@ -247,7 +248,8 @@ double ChangeRule(Node *top,int *Done)
 			
 			// draw the rule from list of good ones
 			//u=ran1(&idum);
-                        u = unif_rand();
+                        //u = unif_rand();
+                        u = R::runif(0.0,1.0);
 			ruleI = (int)floor(u*sum)+1;
 			ruleI = GetSkipBadInd(numr,RuleInd,ruleI);
 
@@ -332,7 +334,8 @@ double ChangeRule(Node *top,int *Done)
 
 			//draw the rule
 			//u=ran1(&idum);
-                        u = unif_rand();
+                        //u = unif_rand();
+                        u = R::runif(0.0,1.0);
 			ruleI = l+(int)floor(u*numsplit);
 
 			//get logpri and logL from current tree (X)

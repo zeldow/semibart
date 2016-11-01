@@ -169,7 +169,8 @@ double SwapRule(Node *top,int *Done)
 
 	// randomly choose a node with a swappable rule = dad
 	//u=ran1(&idum);
-        u = unif_rand();
+        //u = unif_rand();
+        u = R::runif(0.0,1.0);
 	int NodeI =  (int)floor(u*Nswap)+1;
 	Node *dad = swapvec[NodeI];
 	
@@ -188,7 +189,8 @@ double SwapRule(Node *top,int *Done)
 	
 		if((lI+rI)==2) {
 			//u=ran1(&idum);
-			u=unif_rand();
+			//u=unif_rand();
+			u = R::runif(0.0,1.0);
 			if(u<.5) {
 				kid = dad->LeftC;
 			} else {

@@ -189,7 +189,8 @@ int DrPriVar(Node *n)
   //Rprintf("DrPriVar\n");
 	int Ngood = SumGoodVar(n);
 	//double u=ran1(&idum);
-	double u= unif_rand();
+	//double u= unif_rand();
+	double u = R::runif(0.0,1.0);
 	int VarI =  (int)floor(u*Ngood)+1; //take of +1 if LOOP
 
 	return GetSkipBadInd(NumX,n->VarAvail,VarI);
@@ -242,7 +243,8 @@ void DrPriRule(int VarI,Node *GNode,int *LeftEx,int *RightEx)
 		int *sel = new int [Ncat+1];
 		sel[1] = 1;// the first value of cats always goes right
 		//int index =(int)(ran1(&idum)*(pow(2.0,Ncat-1)-1));
-		int index =(int)(unif_rand()*(pow(2.0,Ncat-1)-1));
+		//int index =(int)(unif_rand()*(pow(2.0,Ncat-1)-1));
+		int index =(int)(R::runif(0.0,1.0)*(pow(2.0,Ncat-1)-1));
 		indtd(Ncat-1,index,(sel+1));
 		//Rprintf("check1");
 		selind=0;
@@ -279,7 +281,8 @@ void DrPriRule(int VarI,Node *GNode,int *LeftEx,int *RightEx)
 		}
 		
 		//u = ran1(&idum);
-		u = unif_rand();
+		//u = unif_rand();
+		u = R::runif(0.0,1.0);
 		(GNode->rule).OrdRule = LeftI +((int)floor(u*numsplit));
 
 		if((GNode->rule).OrdRule==LeftI) *LeftEx=1;

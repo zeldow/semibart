@@ -465,7 +465,8 @@ void Node::currentFits(MuS* mod,int nTrain,mat xTrain,vec yTrain,vec w, vec &fit
 
                 b=nobTrain/mod->getSigma2();a=mod->getA();
                 postmu = b*ybar/(a+b); postsd = 1.0/sqrt(a+b);
-                nodeMu = postmu + postsd*norm_rand();
+                //nodeMu = postmu + postsd*norm_rand();
+                nodeMu = postmu + postsd*R::rnorm(0.0,1.0);
 		//Rprintf("nodeMu: %.5f\n",nodeMu);
 		
 		for(int j=1;j<=nobTrain;j++) fits(itr[j]-1) = nodeMu; //altered

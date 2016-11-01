@@ -289,7 +289,8 @@ double Metrop(Node **top,int *Done,int *step)
 	double alpha;
 	int BD;
 
-	double u = unif_rand();
+	//double u = unif_rand();
+	double u = R::runif(0.0,1.0);
 	//Rprintf("u: %.1f\n",u);
 	if(u<pBD) {
 		alpha = BirthDeath(*top,&BD,Done);

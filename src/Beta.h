@@ -26,7 +26,9 @@ class Beta
     //mat lamN = sig_reg*sig_beta*(AA/sig_reg + I_A/sig_beta);
     mat lamN = (AA*sig_beta + I_A*sig_reg)/(sig_beta*sig_reg);
     vec muN = lamN.i()*(Ay*sig_beta+mean_beta*sig_reg)/(sig_reg*sig_beta);
-    mat Ydraw = randn(1,NumA);
+    //mat Ydraw = randn(1,NumA);
+    mat Ydraw(1,NumA);
+    for(int i = 0; i < NumA; i++) Ydraw(0,i) = R::rnorm(0.0,1.0);
     mat finalsig = lamN.i();
     draw = muN + trans(Ydraw*chol(finalsig));
     }

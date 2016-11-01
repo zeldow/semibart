@@ -304,7 +304,8 @@ List semibart_cpp(arma::mat iX, arma::mat itrt, arma::vec iy,
 	          {
 	            blip = blip+trt(i-1,j)*curr_beta(j); 
 	          }
-	        u = unif_rand();
+	        //u = unif_rand();
+	        u = R::runif(0.0,1.0);
 	        if(ydat(i-1) > 0) {
 	          //Z = R::qnorm((1.0-u)*R::pnorm(-mtotalfit(i-1)-blip-binary_offset,0.0,1.0,1,0)+u,0.0,1.0,1,0);
 	          Z = R::qnorm(R::runif(R::pnorm(0,mtotalfit(i-1)+blip+binary_offset,1.0,1,0),1),mtotalfit(i-1)+blip+binary_offset,1.0,1,0);

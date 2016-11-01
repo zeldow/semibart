@@ -13,7 +13,8 @@ using namespace arma;
 void MuS::drawPost()   
 {
   // Rprintf("MuS::drawPost\n");
-   mu = post_m + post_s*norm_rand();
+   //mu = post_m + post_s*norm_rand();
+   mu = post_m + post_s*R::rnorm(0.0,1.0);
 }
 double MuS::getLogILik()   //probably ok
 {
