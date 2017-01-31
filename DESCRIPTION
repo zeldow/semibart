@@ -8,7 +8,7 @@ Maintainer: Bret Zeldow <zeldow@gmail.com>
 Description: Uses Bayesian Additive Regression Trees (BART) to model part of
     the conditional distribution nonparametrically. The rest of the covariates are
     modelled linearly. Continuous or binary outcomes permitted.
-License: GPL (>= 2)
+License: GPL (>= 3)
 Imports:
     Rcpp (>= 0.12.3)
 LinkingTo: Rcpp, RcppArmadillo

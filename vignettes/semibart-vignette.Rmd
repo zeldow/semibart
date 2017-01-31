@@ -18,7 +18,7 @@ BART is a Bayesian sum-of-trees model which can detect nonlinearities and intera
 
 In addition to the typical prior assumptions and distributions on the BART part (see the BayesTree package), we also specify a multivariate normal prior distribution for $\psi$. That is, $\psi \sim N(0,\sigma^2_{\psi} I).$
 
-When the outcome is binary, we use the probit link.
+When the outcome is binary, we use the probit link. That is $P(Y = 1) = \Phi(f(X))$, where $\Phi$ is the CDF for a standard normal variable.
 
 
 ## Important Notes
@@ -60,7 +60,7 @@ a.train <- cbind(a, a*a) #higher order terms
 * sigquant -- The quantile of the prior that the rough estimate (see sigest) is placed at. The closer the quantile is to 1, the more aggresive the fit will be as you are putting more prior weight on error standard deviations $\sigma^2$ less than the rough estimate. Not used if y.train is binary. See BayesTree package and Chipman et al (2010) for more details.
 * k - For numeric y, k is the number of prior standard deviations $E(Y|x) = f(x)$ is away from +/-.5. The response (y.train) is internally scaled to range from -0.5 to 0.5. For binary y, k is the number of prior standard deviations \eqn{f(x)} is away from +/-3. In both cases, the bigger k is, the more conservative the fitting will be. See BayesTree package and Chipman et al (2010) for more details.
 * power - Prior on tree depth. Must be in the interval $[0, \infty)$.
-* base - Prior on tree depth. Must be in the interval $(0, 1)$:  
+* base - Prior on tree depth. Must be in the interval $(0, 1)$. Power and base are used as follows:
   \ \  P(end node is terminal) = base * (1 + d)^{-power}, where d is the current depth at a given node.
   \ \  See BayesTree package and Chipman et al (2010) for more details.
 * meanb - Prior mean for $\beta$, the parameters on the linear part of the model. Strongly recommended to use mean 0.
@@ -68,7 +68,7 @@ a.train <- cbind(a, a*a) #higher order terms
 * ntree - The number of trees to use for BART.
 * ndpost - Total number of MCMC draws requested.
 * numcut - Number of cutpoints for each variable in BART. Must be of length 1 or have length ncol(x.train).
-* usequants - Indicates whether to use observed quantiles for cutpoints or evenly spaced cutpoints based on min and max for each column in x.train.
+* usequants - Boolean to indicate whether to use observed quantiles for cutpoints or evenly spaced cutpoints based on min and max for each column in x.train.
 * offset - Offset for regression -- used only when outcome is binary.
 * binarylink - Indicates whether to use probit or logit link for binary data. Currently only the probit link is supported. Default is "probit." Will be updated once "logit" is supported.
 * verbose - Boolean value indicating whether or not to print output while running.
@@ -94,4 +94,47 @@ fake.res$sigma
 ```
 
 
-## Examples
+## Examples - Continuous Y
+
+```{r, eval = FALSE}
+set.seed(11)
+n <- 1000
+p <- 5
+x <- matrix(data = rnorm(n*p), nrow = n, ncol = p)
+a <- rbinom(n, size = 1, prob = 0.5)
+y <- 3 + 2 * x[ ,1] - 1 * x[ ,2] + 1.5 * x[ ,3] - 0.5 * x[ ,3] * x[ ,4] + 3 * x[ ,5] + 1 * a + rnorm(n)  
+
+cont.res <- semibart(x.train = x, a.train = a, y.train = y)
+
+```
+
+## Examples - Continuous Y - Two Variables of Interest
+
+```{r, eval = FALSE}
+set.seed(111)
+n <- 1000
+p <- 5
+x <- matrix(data = rnorm(n*p), nrow = n, ncol = p)
+a1 <- rbinom(n, size = 1, prob = 0.5)
+a2 <- rbinom(n, size = 1, prob = 0.35)
+y <- 3 + 2 * x[ ,1] - 1 * x[ ,2] + 1.5 * x[ ,3] - 0.5 * x[ ,3] * x[ ,4] + 3 * x[ ,5] + 1 * a_1 - 2 * a_2 + rnorm(n)  
+
+cont.res <- semibart(x.train = x, a.train = cbind(a_1, a_2), y.train = y)
+
+```
+
+
+## Examples - Binary Y
+
+```{r, eval = FALSE}
+set.seed(1143)
+n <- 1000
+p <- 5
+x <- matrix(data = rnorm(n*p), nrow = n, ncol = p)
+a <- rbinom(n, size = 1, prob = 0.5)
+y <- rbinom(n, size = 1, prob = pnorm(0.3 + 0.2 * x[ ,1] - 0.15 * x[ ,2] + 0.5 * x[ ,3] - 0.25 x[ ,3] * x[ ,4] + 0.5 * x[ ,5] + 0.3 * a))
+
+bin.res <- semibart(x.train = x, a.train = a, y.train = y)
+
+```
+
