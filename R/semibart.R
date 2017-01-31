@@ -95,10 +95,10 @@ semibart = function(
   ntree=200,
   ndpost=1000,
   numcut = 100,
-  usequants = 1,
+  usequants = FALSE,
   offset = 0,
   binarylink = "probit",
-  verbose = 1,
+  verbose = TRUE,
   printevery = 100)
 {
   binary=FALSE
@@ -127,6 +127,9 @@ semibart = function(
   if((mode(ntree)!="numeric") || (ntree<0)) stop("input ntree must be a positive number")
   if((mode(ndpost)!="numeric") || (ndpost<0)) stop("input ndpost must be a positive number")
   
+  if(typeof(usequants) != "logical") stop("input usequants must be logical")  
+  if(typeof(verbose) != "logical") stop("input verbose must be logical")
+
   probitlink <- 0;
   if (binarylink == "logit" || binarylink == "logistic") probitlink <- 1
   rgy = range(y.train)
