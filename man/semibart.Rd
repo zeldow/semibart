@@ -15,11 +15,11 @@ model, we use a normal prior on \eqn{\beta} and an inverse chi square prior on
 semibart(x.train, a.train, y.train, sigest = NA, sigdf = 3,
   sigquant = 0.9, k = 2, power = 2, base = 0.95, meanb = rep(0,
   ncol(a.train)), sigb = 4, ntree = 200, ndpost = 1000, numcut = 100,
-  usequants = 1, offset = 0, binarylink = "probit", verbose = 1,
+  usequants = FALSE, offset = 0, binarylink = "probit", verbose = TRUE,
   printevery = 100)
 }
 \arguments{
-\item{x.train}{Design matrix of values to be modeled nonparametrically with BART.}
+\item{x.train}{Design matrix of values to be modeled with BART.}
 
 \item{y.train}{Vector of outcomes (continuous or binary). When binary, elements
 must be either 0 or 1.}
@@ -97,7 +97,7 @@ Vansteelandt et al (2014) and Zeldow et al (2016).
 \examples{
 set.seed(1)
 n <- 200; nc <- 5
-x <- matrix(rnorm(n * nc), nrow = n, ncol = nc))
+x <- matrix(rnorm(n * nc), nrow = n, ncol = nc)
 a <- rbinom(n, 1, 0.5)
 y <- 2 + 3 * x[ ,1] + 0.5 * x[ ,2] - 2 * x[ ,3] + 5 * x[ ,5] + 2 * a + rnorm(n)
 sb <- semibart(x, as.matrix(a), y)
