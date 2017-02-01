@@ -139,7 +139,7 @@ semibart = function(
   # sigest is on the scale of the transformed y, so we do the lm after the scaling above...
   if(!binary) {
     if (is.na(sigest)) {
-      templm = lm(y~x.train+a.train-1) 
+      templm = stats::lm(y~x.train+a.train-1) 
       sigest = summary(templm)$sigma
     } else {
       sigest = sigest/(rgy[2]-rgy[1]) #put input sigma estimate on transformed scale
