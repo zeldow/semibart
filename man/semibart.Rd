@@ -21,6 +21,8 @@ semibart(x.train, a.train, y.train, sigest = NA, sigdf = 3,
 \arguments{
 \item{x.train}{Design matrix of values to be modeled with BART.}
 
+\item{a.train}{Design matrix of values to be modeled linearly.}
+
 \item{y.train}{Vector of outcomes (continuous or binary). When binary, elements
 must be either 0 or 1.}
 
@@ -71,8 +73,6 @@ MCMC algorithm.}
 
 \item{printevery}{Indicates how often to print an update on completion of algorithm. 
 Default is to print a message every 100 iterations. Ignored if verbose = FALSE.}
-
-\item{Design}{matrix of values to be modeled linearly.}
 }
 \value{
 Returns a list containing a matrix of MCMC draws for regression parameters 
@@ -100,7 +100,7 @@ n <- 200; nc <- 5
 x <- matrix(rnorm(n * nc), nrow = n, ncol = nc)
 a <- rbinom(n, 1, 0.5)
 y <- 2 + 3 * x[ ,1] + 0.5 * x[ ,2] - 2 * x[ ,3] + 5 * x[ ,5] + 2 * a + rnorm(n)
-sb <- semibart(x, as.matrix(a), y)
+\dontrun{sb <- semibart(x, as.matrix(a), y)}
 }
 \references{
 Chipman, H., George, E., and McCulloch R. (2010) 
@@ -110,7 +110,7 @@ Chipman, H., George, E., and McCulloch R. (2010)
 Vansteelandt, S, and Joffe, M. (2014) Structural nested models and g-estimation: 
  The partially realized promise. \emph{Statistical Science:} 707-731.
 
-Zeldow, B, Lo Re, V, Roy, J. (2017) Bayesian semiparametric 
+Zeldow, B, Lo Re, V, Roy, J. (2016) Bayesian semiparametric 
  regression and structural mean models with BART.
 }
 

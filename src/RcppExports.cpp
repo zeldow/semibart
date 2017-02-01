@@ -6,9 +6,9 @@
 
 using namespace Rcpp;
 
-// semibart_cpp
-List semibart_cpp(arma::mat iX, arma::mat itrt, arma::vec iy, double sigma, int sigdf, double sigquant, double kfac, double power, double base, arma::vec meanb, double sigb, int ntree, int ndpost, arma::ivec inumcut, int iusequants, double binary_offset, int probitlink, int verbose, int printevery);
-RcppExport SEXP semibart_semibart_cpp(SEXP iXSEXP, SEXP itrtSEXP, SEXP iySEXP, SEXP sigmaSEXP, SEXP sigdfSEXP, SEXP sigquantSEXP, SEXP kfacSEXP, SEXP powerSEXP, SEXP baseSEXP, SEXP meanbSEXP, SEXP sigbSEXP, SEXP ntreeSEXP, SEXP ndpostSEXP, SEXP inumcutSEXP, SEXP iusequantsSEXP, SEXP binary_offsetSEXP, SEXP probitlinkSEXP, SEXP verboseSEXP, SEXP printeverySEXP) {
+// semibartcpp
+List semibartcpp(arma::mat iX, arma::mat itrt, arma::vec iy, double sigma, int sigdf, double sigquant, double kfac, double power, double base, arma::vec meanb, double sigb, int ntree, int ndpost, arma::ivec inumcut, int iusequants, double binary_offset, int probitlink, int verbose, int printevery);
+RcppExport SEXP semibart_semibartcpp(SEXP iXSEXP, SEXP itrtSEXP, SEXP iySEXP, SEXP sigmaSEXP, SEXP sigdfSEXP, SEXP sigquantSEXP, SEXP kfacSEXP, SEXP powerSEXP, SEXP baseSEXP, SEXP meanbSEXP, SEXP sigbSEXP, SEXP ntreeSEXP, SEXP ndpostSEXP, SEXP inumcutSEXP, SEXP iusequantsSEXP, SEXP binary_offsetSEXP, SEXP probitlinkSEXP, SEXP verboseSEXP, SEXP printeverySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -31,7 +31,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type probitlink(probitlinkSEXP);
     Rcpp::traits::input_parameter< int >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< int >::type printevery(printeverySEXP);
-    rcpp_result_gen = Rcpp::wrap(semibart_cpp(iX, itrt, iy, sigma, sigdf, sigquant, kfac, power, base, meanb, sigb, ntree, ndpost, inumcut, iusequants, binary_offset, probitlink, verbose, printevery));
+    rcpp_result_gen = Rcpp::wrap(semibartcpp(iX, itrt, iy, sigma, sigdf, sigquant, kfac, power, base, meanb, sigb, ntree, ndpost, inumcut, iusequants, binary_offset, probitlink, verbose, printevery));
     return rcpp_result_gen;
 END_RCPP
 }

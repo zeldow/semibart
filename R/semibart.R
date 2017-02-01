@@ -85,7 +85,7 @@
 #'x <- matrix(rnorm(n * nc), nrow = n, ncol = nc)
 #'a <- rbinom(n, 1, 0.5)
 #'y <- 2 + 3 * x[ ,1] + 0.5 * x[ ,2] - 2 * x[ ,3] + 5 * x[ ,5] + 2 * a + rnorm(n)
-#'sb <- semibart(x, as.matrix(a), y)
+#'\dontrun{sb <- semibart(x, as.matrix(a), y)}
 semibart = function(
   x.train,a.train, y.train,
   sigest=NA, sigdf=3, sigquant=.90, 
@@ -152,7 +152,7 @@ semibart = function(
     offset = -1000.0
   }
   
-  bartres_ <- semibart_cpp(x.train,a.train,y,as.double(sigest),
+  bartres_ <- semibartcpp(x.train,a.train,y,as.double(sigest),
                     as.integer(sigdf),as.double(sigquant),as.double(k),
                     as.double(power),as.double(base),
                     as.double(meanb),as.double(sigb),
