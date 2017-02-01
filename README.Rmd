@@ -1,0 +1,17 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# semibart
+
+The purpose of semibart is to provide a simple R implementation of Bayesian semiparametric regression, which utilizes Bayesian Additive Regression Trees to model complicated functional forms that can't easily be modeled using generalized linear model (GLM) framework. This package is a simple modification of the BayesTree package. Let $Y$ be an outcome and $X$ be other covariates which serve as predictors of $Y$. In a GLM, $E(Y | X) = g^{-1}(X\beta)$, where $g$ is a link function appropriate to the context. The semibart model assumes that you can partition the predictors $X$ into $(X_1, X_2)$. If the effect of $X_1$ on $Y$ is of scientific interest and $X_2$ are merely confounders, our model is $E(Y | X) = g^{-1}(X_1\beta + \omega(X_2))$, where the function $\omega$ is unspecified and modeled with BART. Since BART is a Bayesian procedure, we also let the prior distribution of $\beta$ be multivariate normal with mean $\beta_0$ and variance $\sigma^2_{\beta} I$, where $I$ is the identity matrix.
