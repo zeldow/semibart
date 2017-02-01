@@ -31,7 +31,7 @@
 #'
 #'
 #'@param x.train Design matrix of values to be modeled with BART.
-#'@param Design matrix of values to be modeled linearly.
+#'@param a.train Design matrix of values to be modeled linearly.
 #'@param y.train Vector of outcomes (continuous or binary). When binary, elements
 #'  must be either 0 or 1.
 #'@param sigest Estimate of regression error. If no value is supplied and sigest=NA,
