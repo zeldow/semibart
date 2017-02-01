@@ -2,15 +2,7 @@
 % Please edit documentation in R/semibart.R
 \name{semibart}
 \alias{semibart}
-\title{Semiparametric regression using BART. For continuous outcomes \eqn{y}, the model is
-\eqn{y = \omega(x) + a \beta + \epsilon}, where \eqn{\epsilon \sim N(0,\sigma^2)}, 
-\eqn{x} are some covariates, and \eqn{a} is a smaller subset of covariates (and possibly
-interactions) that may be of immediate scientific interest. The 
-covariates \eqn{a} represent the design matrix for variables and interactions that are 
-modeled parametrically. The functional form of \eqn{\omega(x)} is unspecified and modeled
-using Bayesian Additive Regression Trees (BART) (Chipman et al, 2010). To complete the 
-model, we use a normal prior on \eqn{\beta} and an inverse chi square prior on 
-\eqn{\sigma}.}
+\title{Bayesian Semiparametric Regression with BART}
 \usage{
 semibart(x.train, a.train, y.train, sigest = NA, sigdf = 3,
   sigquant = 0.9, k = 2, power = 2, base = 0.95, meanb = rep(0,
@@ -81,11 +73,20 @@ Returns a list containing a matrix of MCMC draws for regression parameters
  and $sigma, for the regression parameters and variance parameters, respectively.
 }
 \description{
+Semiparametric regression using BART. For continuous outcomes \eqn{y}, the model is
+\eqn{y = \omega(x) + a \beta + \epsilon}, where \eqn{\epsilon \sim N(0,\sigma^2)}, 
+\eqn{x} are some covariates, and \eqn{a} is a smaller subset of covariates (and possibly
+interactions) that may be of immediate scientific interest. The 
+covariates \eqn{a} represent the design matrix for variables and interactions that are 
+modeled parametrically. The functional form of \eqn{\omega(x)} is unspecified and modeled
+using Bayesian Additive Regression Trees (BART) (Chipman et al, 2010). To complete the 
+model, we use a normal prior on \eqn{\beta} and an inverse chi square prior on 
+\eqn{\sigma}. 
+
 For binary \eqn{y}, the model is \eqn{P(Y=1 | x, a) = F(\omega(x) + a\beta)}, where \eqn{F} 
 denotes the standard normal cdf (probit link) and BART is used to model the nonparametric 
 \eqn{\omega(x)}.
-}
-\details{
+
 The covariates in the parametric and nonparametric parts may overlap. That is, a covariate
 included in \eqn{x} may also be included in the parametric part as an interaction with the
 exposure variable if effect modification is of scientific interest. In this case, special 

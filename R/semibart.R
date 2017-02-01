@@ -1,4 +1,5 @@
-#'Semiparametric regression using BART. For continuous outcomes \eqn{y}, the model is
+#'Bayesian Semiparametric Regression with BART
+#'@description Semiparametric regression using BART. For continuous outcomes \eqn{y}, the model is
 #'\eqn{y = \omega(x) + a \beta + \epsilon}, where \eqn{\epsilon \sim N(0,\sigma^2)}, 
 #'\eqn{x} are some covariates, and \eqn{a} is a smaller subset of covariates (and possibly
 #'interactions) that may be of immediate scientific interest. The 
@@ -76,8 +77,9 @@
 #'
 #'@importFrom stats lm
 #'
-#'@export
+#'@useDynLib semibart
 #'
+#'@export
 #'
 #'@examples
 #'set.seed(1)
