@@ -82,7 +82,7 @@
 #'@examples
 #'set.seed(1)
 #'n <- 200; nc <- 5
-#'x <- matrix(rnorm(n * nc), nrow = n, ncol = nc))
+#'x <- matrix(rnorm(n * nc), nrow = n, ncol = nc)
 #'a <- rbinom(n, 1, 0.5)
 #'y <- 2 + 3 * x[ ,1] + 0.5 * x[ ,2] - 2 * x[ ,3] + 5 * x[ ,5] + 2 * a + rnorm(n)
 #'sb <- semibart(x, as.matrix(a), y)
