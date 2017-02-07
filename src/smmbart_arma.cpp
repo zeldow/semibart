@@ -226,7 +226,7 @@ List semibartcpp(arma::mat iX, arma::mat itrt, arma::vec iy,
   
   // stores current values of Beta
   vec curr_beta(NumA); curr_beta.zeros();
-  double curr_sig;
+  // double curr_sig;
   
 
   mat Aty; //for storing trt.t()*y (or eps)

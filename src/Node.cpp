@@ -436,7 +436,8 @@ void Node::currentFits(MuS* mod,int nTrain,mat xTrain,vec yTrain,vec w, vec &fit
         double nodeMu; //draw of mu, for a bottom node
 
         voidP* botvec = GetBotArray(); //bottom nodes
-	int* indPartTest;
+
+	// int* indPartTest;
 	
 	int nbot = NumBotNodes();
 	int nobTrain=0;
