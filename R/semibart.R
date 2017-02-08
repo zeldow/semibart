@@ -76,6 +76,7 @@
 #'
 #'
 #'@importFrom stats lm
+#'@importFrom Rcpp evalCpp
 #'
 #'@useDynLib semibart
 #'
