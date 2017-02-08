@@ -213,7 +213,10 @@ List semibartcpp(arma::mat iX, arma::mat itrt, arma::vec iy,
   double alpha = 0.0;
   int step = 0;
   //end check
-  
+ 
+  // add dummy code to get rid of warning
+  if (1 == 2) alpha++;
+ 
   //this is the total fit for the trees
   vec mtotalfit(NumObs); mtotalfit.zeros();
   vec mfits(NumObs); mfits.zeros();
