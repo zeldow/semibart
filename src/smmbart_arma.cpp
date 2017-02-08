@@ -300,7 +300,8 @@ List semibartcpp(arma::mat iX, arma::mat itrt, arma::vec iy,
 
     if(binary) {
       if(probitlink==0) {
-        double u, Z, blip;
+        // double u, Z, blip;
+	double Z, blip;
         for(int i = 1; i <= NumObs; i++) {
 	        blip = 0.0;
 	        for(int j=0;j<NumA;j++)
@@ -308,7 +309,7 @@ List semibartcpp(arma::mat iX, arma::mat itrt, arma::vec iy,
 	            blip = blip+trt(i-1,j)*curr_beta(j); 
 	          }
 	        //u = unif_rand();
-	        u = R::runif(0.0,1.0);
+	        // u = R::runif(0.0,1.0);
 	        if(ydat(i-1) > 0) {
 	          //Z = R::qnorm((1.0-u)*R::pnorm(-mtotalfit(i-1)-blip-binary_offset,0.0,1.0,1,0)+u,0.0,1.0,1,0);
 	          Z = R::qnorm(R::runif(R::pnorm(0,mtotalfit(i-1)+blip+binary_offset,1.0,1,0),1),mtotalfit(i-1)+blip+binary_offset,1.0,1,0);
