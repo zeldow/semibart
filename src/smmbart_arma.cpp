@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include <Rcpp.h>
 #include <Rcpp/RNGScope.h>
+#include <Rcpp/routines.h>
 #include <Rmath.h>
 #include <fstream>
 #include <cstring>
