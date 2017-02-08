@@ -114,4 +114,3 @@ Vansteelandt, S, and Joffe, M. (2014) Structural nested models and g-estimation:
 Zeldow, B, Lo Re, V, Roy, J. (2016) Bayesian semiparametric 
  regression and structural mean models with BART.
 }
-
